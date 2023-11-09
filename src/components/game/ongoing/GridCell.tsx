@@ -1,8 +1,8 @@
-import getBoatLocations from "../../database/queries/boat-locations/get-boat-locations.ts";
-import boatSizeToCss from "../../logic/boat-size-to-css.ts";
-import getMoves from "../../database/queries/moves/get-moves.ts";
-import {indexToCoord} from "../../utils/coordinate-utils.ts";
-import {Database} from "../../database/supabase.ts";
+import getBoatLocations from "../../../database/queries/boat-locations/get-boat-locations.ts";
+import boatSizeToCss from "../../../logic/boat-size-to-css.ts";
+import getMoves from "../../../database/queries/moves/get-moves.ts";
+import {indexToCoord} from "../../../utils/coordinate-utils.ts";
+import {Database} from "../../../database/supabase.ts";
 
 type Props = {
     index: number

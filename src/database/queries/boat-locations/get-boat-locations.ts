@@ -1,6 +1,6 @@
 import {supabase} from "../../supabase_setup.ts";
 
-type FunctionReturns = {
+export type GetBoatLocationsFunctionReturns = {
     boat_type_id: {
         boat_type_id: string,
         size: number,
@@ -13,7 +13,7 @@ type FunctionReturns = {
     y_coordinate: number
 }[]
 
-export default async function getBoatLocations(gameSessionId: string, playerId: string): Promise<FunctionReturns> {
+export default async function getBoatLocations(gameSessionId: string, playerId: string): Promise<GetBoatLocationsFunctionReturns> {
     // return supabase
     //     .rpc('get_occupied_coords', { p_session_id: gameSessionId, p_player_id: playerId })
 
@@ -25,5 +25,5 @@ export default async function getBoatLocations(gameSessionId: string, playerId: 
     if (error != null)
         throw Error('Boat locations could not be found')
 
-    return data as unknown as FunctionReturns
+    return data as unknown as GetBoatLocationsFunctionReturns
 }
