@@ -1,4 +1,5 @@
 import {Database} from "../../../database/supabase.ts";
+import {getProfileImageByIndex} from "../../../constants/profile-imgs-constants.ts";
 
 type Props = {
     profile: Database['battleships']['Tables']['players']['Row']
@@ -15,7 +16,7 @@ export default function GameProfile({ profile, isThisPlayersTurn, timeSecsLeft, 
                 <h5 className={`font-bold smooth-transition tabular-nums ${ isThisPlayersTurn ? 'text-teal-500' : 'text-gray-500' }`}>{ timeSecsLeft.toString() } secs</h5>
             </div>
 
-            <img src='/src/assets/battleships-icon.png' alt='profile-pic' className={`mx-2 h-11 w-11 aspect-square rounded-full border-2 smooth-transition ${ isThisPlayersTurn ? 'border-teal-500' : 'border-gray-500' }`}/>
+            <img src={getProfileImageByIndex(profile.image_index)} alt='profile-pic' className={`mx-2 h-11 w-11 aspect-square rounded-full border-2 smooth-transition ${ isThisPlayersTurn ? 'border-teal-500' : 'border-gray-500' }`}/>
         </div>
     )
 }

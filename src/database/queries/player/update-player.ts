@@ -1,10 +1,9 @@
 import {supabase} from "../../supabase_setup.ts";
 
-export default async function createPlayer(username: string, imageIndex: number) {
-    const password = 'unknown'
-
+export default async function updatePlayer(playerId: string, username?: string, imageIndex?: number) {
     const { data, error } = await supabase.from('players')
-        .insert({ username, password, image_index: imageIndex })
+        .update({ username, image_index: imageIndex })
+        .eq('player_id', playerId)
         .select()
         .single()
 

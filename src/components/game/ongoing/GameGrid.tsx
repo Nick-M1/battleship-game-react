@@ -31,7 +31,7 @@ export default function GameGrid({ index, title, boatLocations, moves, onClickHa
                 </div>
 
                 <div className={`left-0 right-0 bottom-0 top-0 grid grid-cols-10 grid-rows-10 md:max-w-[80dvw] max-h-[80dvh] aspect-square border-4 smooth-transition ${playableGridCss}`}>
-                    { createIncrementingArray(100).map((value) => {
+                    { createIncrementingArray(1, 100).map((value) => {
                         const { xCoordinate, yCoordinate } = indexToCoord(value)
                         return (
                             <div key={value} id={getGridCellId(index, value)} onClick={() => onClickHander(xCoordinate, yCoordinate)} className={`chess-grid w-full h-full smooth-transition flex justify-center items-center ${playableCellCss}`}>
@@ -42,7 +42,7 @@ export default function GameGrid({ index, title, boatLocations, moves, onClickHa
                 </div>
 
                 <div className='absolute left-0 right-0 bottom-0 top-0 pointer-events-none grid grid-cols-10 grid-rows-10 md:max-w-[80dvw] max-h-[80dvh] aspect-square border-4 border-black/0'>
-                    { createIncrementingArray(100).map((value) =>
+                    { createIncrementingArray(1, 100).map((value) =>
                         <GridCell key={value} index={value} boatLocations={boatLocations} moves={moves} />
                     )}
                 </div>

@@ -1,3 +1,3 @@
-export function createIncrementingArray(length: number) {
-    return Array.from({ length }, (_, i) => i + 1)
+export function createIncrementingArray(min: number, max: number) {
+    return Array.from({ length: max }, (_, i) => i + min)
 }

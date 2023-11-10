@@ -1,5 +1,5 @@
 import {getPlayerIdLocalstorage, setPlayerIdLocalstorage} from "../utils/localstorage-leaderboard.ts";
-import {useLoaderData, useNavigate} from "react-router-dom";
+import {useLoaderData} from "react-router-dom";
 import NavButtonRight from "../components/shared/NavButtonRight.tsx";
 import {FormEvent, useState} from "react";
 import createPlayer from "../database/queries/player/create-player.ts";
@@ -9,6 +9,15 @@ import {
     getSelectedGameBackgroundIndex,
     setSelectedGameBackgroundIndex
 } from "../constants/asset-background-game.ts";
+import ImagesSelect from "../components/menu/ImagesSelect.tsx";
+import {
+    getProfileImageByIndex,
+    getProfileImageTextByIndex,
+    PROFILE_IMAGES_LENGTH
+} from "../constants/profile-imgs-constants.ts";
+import {createIncrementingArray} from "../utils/array-utils.ts";
+import updatePlayer from "../database/queries/player/update-player.ts";
+
 
 export async function loader() {
     const playerId = getPlayerIdLocalstorage()
@@ -20,24 +29,24 @@ export async function loader() {
 
 export function Component() {
     const { playerId, player } = useLoaderData() as Awaited<ReturnType<typeof loader>>
+    const [selectedProfileImageIndex, setSelectedProfileImageIndex] = useState(player?.image_index || 0)
+
     const [storedGameBackgroundIndex, setStoredGameBackgroundIndex] = useState(getSelectedGameBackgroundIndex())
 
-    const navigate = useNavigate()
-
-    const onCreatePlayer = async (e: FormEvent<HTMLFormElement>) => {
+    const createPlayerHandler = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         const formData = new FormData(e.currentTarget)
         const username = formData.get("username") as string
 
-        const { data, error } = await createPlayer(username)
+        if (playerId === null) {
+            const updatedPlayer = await createPlayer(username, selectedProfileImageIndex)       //todo warning banner toast if username not unique
+            setPlayerIdLocalstorage(updatedPlayer.player_id)
 
-        if (error != null) {
-            console.log(error)
-            throw Error('Error creating player')
+        } else {
+            const updatedPlayer = await updatePlayer(playerId, username === player.username ? undefined : username, selectedProfileImageIndex === player.image_index ? undefined : selectedProfileImageIndex)
         }
 
-        setPlayerIdLocalstorage(data.player_id)
-        navigate(0)
+        window.location.reload()
     }
 
     const setGameBackgroundHandler = (index: number) => {
@@ -50,7 +59,7 @@ export function Component() {
         <div className="flex flex-col md:flex-row space-y-3 items-center justify-center h-full">
             { playerId != null && <NavButtonRight text='MAIN MENU' to='/menu' className='font-extrabold text-drop-shadow-black-sm text-yellow-400'/> }
 
-            <form onSubmit={onCreatePlayer} className="bg-neutral-800 p-6 sm:p-9 rounded-lg shadow-lg mx-auto space-y-8 ">
+            <form onSubmit={createPlayerHandler} className="bg-neutral-800 p-6 sm:p-9 rounded-lg shadow-lg mx-auto space-y-8 ">
                 <h1 className="text-4xl md:text-6xl tracking-wide font-extrabold text-yellow-500 py-2">
                     Player Settings
                 </h1>
@@ -61,6 +70,28 @@ export function Component() {
                     <input type='text' id='username' name='username' defaultValue={player?.username} className='input-primary-valid' placeholder='Username...'/>
                 </div>
 
+                <div>
+                    <label htmlFor='profile-image' className='text-lg text-gray-300 tracking-wider'>Profile Image:</label>
+                    <div className='flex space-x-2 my-1.5 items-center'>
+                        <img src={getProfileImageByIndex(selectedProfileImageIndex)} alt='Profile Image' title='Profile Image' className='w-16 mr-2'/>
+
+                        <ImagesSelect
+                            id='profile-image'
+                            allOptions={createIncrementingArray(0, PROFILE_IMAGES_LENGTH)}
+                            anOptionToStringFunc={(option) => getProfileImageTextByIndex(option)}
+                            anOptionToJSXFunc={(option) =>
+                                <div className='flex items-center space-x-2'>
+                                    <img src={getProfileImageByIndex(option)} alt='image' className='w-9'/>
+                                    <span>{ getProfileImageTextByIndex(option) }</span>
+                                </div>
+                            }
+                            selected={selectedProfileImageIndex}
+                            setSelected={setSelectedProfileImageIndex}
+                        />
+                    </div>
+                </div>
+
+
                 <button type='submit' className='button-orange w-full rounded-full text-white sm:text-xl'>
                     { playerId == null ? 'Create Player' : 'Update Player' }
                 </button>
@@ -68,7 +99,7 @@ export function Component() {
             </form>
 
 
-            <form onSubmit={onCreatePlayer} className="bg-neutral-800 p-6 sm:p-9 rounded-lg shadow-lg mx-auto space-y-3 ">
+            <form onSubmit={createPlayerHandler} className="bg-neutral-800 p-6 sm:p-9 rounded-lg shadow-lg mx-auto space-y-3 ">
                 <h1 className="text-4xl md:text-6xl tracking-wide font-extrabold text-yellow-500 py-2">
                     Theme Settings
                 </h1>
