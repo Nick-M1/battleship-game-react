@@ -9,6 +9,7 @@ import createMove from "../../../database/queries/moves/create-move.ts";
 import GameHeader from "./GameHeader.tsx";
 import GameGrid from "./GameGrid.tsx";
 import useIsPlayersTurn from "../../../hooks/useIsPlayersTurn.ts";
+import useGameMoves from "../../../hooks/useGameMoves.ts";
 
 type Props = {
     playerId: string
@@ -22,49 +23,10 @@ type Props = {
 }
 
 export default function GameOngoing({ playerId, thisPlayer, otherPlayer, gameSession, boatLocations, thisPlayerMovesInitial, otherPlayerMovesInitial, isPlayer1 }: Props) {
-
-    const [thisPlayerMoves, setThisPlayerMoves] = useState(thisPlayerMovesInitial)
-    const [otherPlayerMoves, setOtherPlayerMoves] = useState(otherPlayerMovesInitial)
+    const [thisPlayerMoves, otherPlayerMoves] = useGameMoves(playerId, gameSession.session_id, thisPlayerMovesInitial, otherPlayerMovesInitial)
     const isPlayersTurn = useIsPlayersTurn(isPlayer1, gameSession.current_turn)
 
-
-//todo useHooks
-    useEffect(() => {
-        const movesTblSubscribe = supabase.channel('moves')
-            .on('postgres_changes',
-                { event: 'INSERT', schema: 'battleships', table: 'moves', filter: `session_id=eq.${gameSession.session_id}` },
-                (payload) => {
-                    const newMove = {
-                        created_at: payload.new.created_at,
-                        session_id: payload.new.session_id,
-                        player_id: payload.new.player_id,
-                        result: payload.new.result,
-                        x_coordinate: payload.new.x_coordinate,
-                        y_coordinate: payload.new.y_coordinate
-                    } as Database['battleships']['Tables']['moves']['Row']
-
-                    if (payload.new.player_id === playerId) {
-                        setThisPlayerMoves(prev => [...prev, newMove])
-
-                        const elem = document.getElementById(getGridCellId(1, coordToIndex(payload.new.x_coordinate, payload.new.y_coordinate)))
-                        elem?.classList.add(DROP_PIECE_CSS)
-
-                        setTimeout(() => elem?.classList.remove(DROP_PIECE_CSS), 200)
-
-                    } else {
-                        setOtherPlayerMoves(prev => [...prev, newMove])
-                    }
-                }
-            )
-            .subscribe()
-
-        return () => {
-            movesTblSubscribe.unsubscribe()
-        }
-    }, [gameSession.session_id, playerId])
-
-
-
+    //todo move handler elsewhere
     const moveHandler = async (xCoordinate: number, yCoordinate: number) => {
         if (!isPlayersTurn)
             return
@@ -75,7 +37,7 @@ export default function GameOngoing({ playerId, thisPlayer, otherPlayer, gameSes
 
 
     return (
-        <div className='min-h-screen bg-neutral-800 game-background-3 font-riffic text-white'>
+        <div className='min-h-screen scrollbar bg-neutral-800 game-background-3 font-riffic text-white'>
             <GameHeader thisPlayer={thisPlayer} otherPlayer={otherPlayer} isPlayersTurn={isPlayersTurn} lastMoveDatetime={gameSession.modified_at} timePerMove={gameSession.time_per_move as string}/>
 
             <div className='md:grid grid-cols-2'>

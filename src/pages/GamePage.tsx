@@ -7,6 +7,7 @@ import getMoves from "../database/queries/moves/get-moves.ts";
 import GameOngoing from "../components/game/ongoing/GameOngoing.tsx";
 import useGameSession from "../hooks/useGameSession.ts";
 import GameFinished from "../components/game/finished/GameFinished.tsx";
+import GameJoining from "../components/game/joining/GameJoining.tsx";
 
 
 export async function loader({ params }: { params: { gameid: string } }) {
@@ -20,6 +21,10 @@ export async function loader({ params }: { params: { gameid: string } }) {
         return redirect('/settings')
 
     const thisPlayer = await getPlayerById(playerId)
+
+    if (gameSessionInitial.game_status === 'joining' || gameSessionInitial.player_2_id === null)
+        return { playerId, thisPlayer, gameSessionInitial, isPlayer1 }
+
     const otherPlayer = await getPlayerById(isPlayer1 ? gameSessionInitial.player_2_id : gameSessionInitial.player_1_id)
 
     if (gameSessionInitial.game_status === 'finished')
@@ -36,7 +41,9 @@ export function Component() {
     const { playerId, thisPlayer, otherPlayer, gameSessionInitial, boatLocations, thisPlayerMovesInitial, otherPlayerMovesInitial, isPlayer1 } = useLoaderData() as Exclude<Awaited<ReturnType<typeof loader>>, Response>
     const gameSession = useGameSession(gameSessionInitial)
 
-    return gameSession.game_status === 'finished'
-        ? <GameFinished playerId={playerId} thisPlayer={thisPlayer} otherPlayer={otherPlayer} gameSession={gameSession} isPlayer1={isPlayer1}/>
-        : <GameOngoing playerId={playerId} thisPlayer={thisPlayer} otherPlayer={otherPlayer} gameSession={gameSession} boatLocations={boatLocations!} thisPlayerMovesInitial={thisPlayerMovesInitial!} otherPlayerMovesInitial={otherPlayerMovesInitial!} isPlayer1={isPlayer1}/>
+    switch (gameSession.game_status) {
+        case "joining":  return <GameJoining playerId={playerId} thisPlayer={thisPlayer} gameSession={gameSession}/>
+        case "ongoing":  return <GameOngoing playerId={playerId} thisPlayer={thisPlayer} otherPlayer={otherPlayer!} gameSession={gameSession} boatLocations={boatLocations!} thisPlayerMovesInitial={thisPlayerMovesInitial!} otherPlayerMovesInitial={otherPlayerMovesInitial!} isPlayer1={isPlayer1}/>
+        case "finished": return <GameFinished playerId={playerId} thisPlayer={thisPlayer} otherPlayer={otherPlayer!} gameSession={gameSession} isPlayer1={isPlayer1}/>
+    }
 }

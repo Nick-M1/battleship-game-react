@@ -1,14 +1,32 @@
-// import {useLoaderData} from "react-router-dom";
+import {redirect, useLoaderData, useNavigate} from "react-router-dom";
 
-// export async function loader() {
-//     // const player = await getPlayerById('j')
-//     return { }
-// }
+export async function loader() {
+    const playerId = getPlayerIdLocalstorage()
+
+    return playerId === null
+        ? redirect('/settings')
+        : { playerId }
+}
 
 import NavButtonRight from "../components/shared/NavButtonRight.tsx";
 import NavButtonLeft from "../components/shared/NavButtonLeft.tsx";
+import {getPlayerIdLocalstorage} from "../utils/localstorage-leaderboard.ts";
+import createGameSession from "../database/queries/game-session/create-game-session.ts";
 
 export function Component() {
+    const { playerId } = useLoaderData() as Exclude<Awaited<ReturnType<typeof loader>>, Response>
+    const navigate = useNavigate()
+
+    const createGameHandler = async () => {
+        const gameSession = await createGameSession(playerId)
+        navigate(`/game/${gameSession.session_id}`)
+    }
+
+    const joinGameHandler = async () => {
+        const gameSession = await createGameSession(playerId)
+        navigate(`/game/${gameSession.session_id}`)
+    }
+
     return (
         <div className="flex items-center justify-center h-full">
             <NavButtonLeft text='SETTINGS' to='/settings' className='font-extrabold text-drop-shadow-black-sm text-yellow-400'/>
@@ -19,7 +37,7 @@ export function Component() {
                     Battleship Mania
                 </h1>
 
-                <button className='button-orange w-full rounded-full text-white sm:text-xl'>
+                <button onClick={createGameHandler} className='button-orange w-full rounded-full text-white sm:text-xl'>
                     Create New Game
                 </button>
 
