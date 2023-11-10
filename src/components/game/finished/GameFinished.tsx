@@ -19,7 +19,7 @@ export default function GameFinished({ playerId, thisPlayer, otherPlayer, gameSe
     const [isFireworksOn, setIsFireworksOn] = useState(true)
 
     return (
-        <div className="relative min-h-screen bg-neutral-800 game-background-3 font-riffic text-white flex flex-col items-center justify-center">
+        <div className="relative min-h-screen bg-neutral-800 bg-game-background font-riffic text-white flex flex-col items-center justify-center">
             { isFireworksOn && <FireworksComponent style={{top: 0, left: 0, right: 0, bottom: 0, position: 'absolute'}}/> }
 
             <button onClick={() => setIsFireworksOn(prev => !prev)} className='absolute top-5 right-5 smooth-transition bg-white/5 hover:bg-white/10 active:bg-white/20 rounded-full p-2.5'>

@@ -8,7 +8,7 @@ type Props = {
 
 export default function GameJoining({ playerId, thisPlayer, gameSession }: Props) {
     return (
-        <div className='min-h-screen scrollbar bg-neutral-800'>
+        <div className='min-h-screen scrollbar bg-neutral-800 bg-game-background'>
             WAITING
         </div>
     )

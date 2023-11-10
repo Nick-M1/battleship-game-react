@@ -1,10 +1,5 @@
-import {useEffect, useMemo, useState} from "react";
 import {Database} from "../../../database/supabase.ts";
 import {GetBoatLocationsFunctionReturns} from "../../../database/queries/boat-locations/get-boat-locations.ts";
-import {supabase} from "../../../database/supabase_setup.ts";
-import {DROP_PIECE_CSS} from "../../../constants/css-constants.ts";
-import getGridCellId from "../../../logic/grid-cell-css.ts";
-import {coordToIndex} from "../../../utils/coordinate-utils.ts";
 import createMove from "../../../database/queries/moves/create-move.ts";
 import GameHeader from "./GameHeader.tsx";
 import GameGrid from "./GameGrid.tsx";
@@ -37,7 +32,7 @@ export default function GameOngoing({ playerId, thisPlayer, otherPlayer, gameSes
 
 
     return (
-        <div className='min-h-screen scrollbar bg-neutral-800 game-background-3 font-riffic text-white'>
+        <div className='min-h-screen scrollbar bg-neutral-800 bg-game-background font-riffic text-white'>
             <GameHeader thisPlayer={thisPlayer} otherPlayer={otherPlayer} isPlayersTurn={isPlayersTurn} lastMoveDatetime={gameSession.modified_at} timePerMove={gameSession.time_per_move as string}/>
 
             <div className='md:grid grid-cols-2'>

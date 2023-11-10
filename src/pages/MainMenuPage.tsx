@@ -1,3 +1,9 @@
+import NavButtonRight from "../components/shared/NavButtonRight.tsx";
+import NavButtonLeft from "../components/shared/NavButtonLeft.tsx";
+import {getPlayerIdLocalstorage} from "../utils/localstorage-leaderboard.ts";
+import createGameSession from "../database/queries/game-session/create-game-session.ts";
+import joinGameSession from "../database/queries/game-session/join-game-session.ts";
+import {FormEvent} from "react";
 import {redirect, useLoaderData, useNavigate} from "react-router-dom";
 
 export async function loader() {
@@ -8,11 +14,6 @@ export async function loader() {
         : { playerId }
 }
 
-import NavButtonRight from "../components/shared/NavButtonRight.tsx";
-import NavButtonLeft from "../components/shared/NavButtonLeft.tsx";
-import {getPlayerIdLocalstorage} from "../utils/localstorage-leaderboard.ts";
-import createGameSession from "../database/queries/game-session/create-game-session.ts";
-
 export function Component() {
     const { playerId } = useLoaderData() as Exclude<Awaited<ReturnType<typeof loader>>, Response>
     const navigate = useNavigate()
@@ -22,8 +23,13 @@ export function Component() {
         navigate(`/game/${gameSession.session_id}`)
     }
 
-    const joinGameHandler = async () => {
-        const gameSession = await createGameSession(playerId)
+    const joinGameHandler = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        const formData = new FormData(e.currentTarget)
+
+        const gameSessionId = formData.get('input-game-session-id') as string
+
+        const gameSession = await joinGameSession(gameSessionId, playerId)
         navigate(`/game/${gameSession.session_id}`)
     }
 
@@ -43,10 +49,12 @@ export function Component() {
 
                 <p className='text-center'>OR</p>
 
-                <input type='text' className='input-primary-valid' placeholder='Game ID...'/>
-                <button className='button-yellow w-full rounded-full text-white sm:text-xl'>
-                    Join Game
-                </button>
+                <form onSubmit={joinGameHandler} className='space-y-6'>
+                    <input id='input-game-session-id' name='input-game-session-id' type='text' className='input-primary-valid' placeholder='Game ID...'/>
+                    <button type='submit' className='button-yellow w-full rounded-full text-white sm:text-xl'>
+                        Join Game
+                    </button>
+                </form>
 
             </div>
         </div>

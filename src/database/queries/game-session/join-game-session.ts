@@ -1,16 +1,17 @@
 import {supabase} from "../../supabase_setup.ts";
 import populateGridWithBoats from "../boat-locations/populate-grid-with-boats.ts";
 
-export default async function createGameSession(playerId: string) {
+export default async function joinGameSession(gameSessionId: string, playerId: string) {
     const { data, error } = await supabase.from('game_sessions')
-        .insert({ player_1_id: playerId, time_per_move: 40 })
+        .update({ player_2_id: playerId, game_status: 'ongoing' })
+        .eq('session_id', gameSessionId)
         .select()
         .single()
 
     if (error !== null || data === null)
         throw Error(JSON.stringify(error))
 
-    await populateGridWithBoats(data.session_id, playerId)
+    await populateGridWithBoats(gameSessionId, playerId)
 
     return data
 }

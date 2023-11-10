@@ -50,7 +50,9 @@ export default {
         'menu-background-3': "url('assets/menu-background/menu-background-3.jpg')",
         'menu-background-4': "url('assets/menu-background/menu-background-4.jpg')",
         'menu-background-5': "url('assets/menu-background/menu-background-5.jpg')",
-        'menu-background-6': "url('assets/menu-background/menu-background-6.jpg')"
+        'menu-background-6': "url('assets/menu-background/menu-background-6.jpg')",
+
+        'game-background': "var(--game-background-image)",
       },
 
       borderWidth: {

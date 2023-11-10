@@ -8,9 +8,12 @@ import GameOngoing from "../components/game/ongoing/GameOngoing.tsx";
 import useGameSession from "../hooks/useGameSession.ts";
 import GameFinished from "../components/game/finished/GameFinished.tsx";
 import GameJoining from "../components/game/joining/GameJoining.tsx";
+import {loadGameBackground} from "../constants/asset-background-game.ts";
 
 
 export async function loader({ params }: { params: { gameid: string } }) {
+    loadGameBackground()
+
     const gameSessionId = params.gameid
     const gameSessionInitial = await getGameSessionById(gameSessionId)
 

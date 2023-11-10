@@ -9,7 +9,14 @@ export default function useGameSession(gameSessionInitial: Database['battleships
         const gameSessionTblSubscribe = supabase.channel('game_sessions')
             .on('postgres_changes',
                 { event: 'UPDATE', schema: 'battleships', table: 'game_sessions', filter: `session_id=eq.${gameSessionInitial.session_id}` },
-                (payload) => setGameSession(payload.new as Database['battleships']['Tables']['game_sessions']['Row'])
+                (payload) => {
+                    if (payload.old.game_status === 'joining' && payload.new.game_status === 'ongoing') {
+                        window.location.reload()
+                        return
+                    }
+
+                    setGameSession(payload.new as Database['battleships']['Tables']['game_sessions']['Row'])
+                }
             )
             .subscribe()
 
