@@ -21,8 +21,8 @@ type Props = {
 export default function GameGrid({ index, title, boatLocations, moves, onClickHander, playableTitleCss, playableGridCss, playableCellCss }: Props) {
     return (
         <div id={getGameGridId(index)}>
-            <h2 className={`ml-10 font-bold text-xl smooth-transition ${ playableTitleCss }`}>{ title }</h2>
-            <div className='relative mt-10 ml-10'>
+            <h2 className={`ml-8 md:ml-10 font-bold text-xl smooth-transition ${ playableTitleCss }`}>{ title }</h2>
+            <div className='relative mt-10 ml-8 md:ml-10'>
                 <div className='absolute -translate-y-6 sm:-translate-y-8 grid grid-cols-10 left-0 right-0 max-w-[80dvh] px-1'>
                     { ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'].map(r => <div key={r} className='text-center sm:text-xl font-bold text-neutral-300'>{ r }</div>) }
                 </div>

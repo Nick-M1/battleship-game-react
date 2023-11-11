@@ -35,7 +35,7 @@ export default function GameOngoing({ playerId, thisPlayer, otherPlayer, gameSes
         <div className='min-h-screen scrollbar bg-neutral-800 bg-game-background font-riffic text-white'>
             <GameHeader thisPlayer={thisPlayer} otherPlayer={otherPlayer} isPlayersTurn={isPlayersTurn} lastMoveDatetime={gameSession.modified_at} timePerMove={gameSession.time_per_move as string}/>
 
-            <div className='md:grid grid-cols-2'>
+            <div className='md:grid grid-cols-2 space-y-8 md:space-y-0 pr-2 pb-3'>
                 <GameGrid index={0} title='Your Boats' boatLocations={boatLocations} moves={otherPlayerMoves} onClickHander={() => {}} playableTitleCss={isPlayersTurn ? 'text-gray-500' : 'text-teal-500'} playableGridCss={isPlayersTurn ? 'border-black opacity-75' : 'border-teal-600'} playableCellCss=''/>
                 <GameGrid index={1} title='Attack Your Opponent!' boatLocations={[]} moves={thisPlayerMoves} onClickHander={moveHandler} playableTitleCss={isPlayersTurn ? 'text-red-500' : 'text-gray-500'} playableGridCss={isPlayersTurn ? 'border-teal-600' : 'border-black opacity-75'} playableCellCss={isPlayersTurn ? 'cursor-pointer hover:!bg-cyan-400 [&>*]:fill-cyan-500/75 [&>*]:hover:fill-black/50 [&>*]:hover:scale-150' : ''}/>
             </div>
