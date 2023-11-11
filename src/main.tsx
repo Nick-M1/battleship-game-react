@@ -4,6 +4,7 @@ import './main.css'
 import {createBrowserRouter, createRoutesFromElements, Route, RouterProvider} from "react-router-dom";
 import ErrorPage from "./pages/ErrorPage";
 
+
 const router = createBrowserRouter(
     createRoutesFromElements(
 
@@ -11,11 +12,12 @@ const router = createBrowserRouter(
             <Route lazy={() => import("./layout/MenuHeaderLayout")}>
                 <Route path='/menu' lazy={() => import("./pages/MainMenuPage.tsx")}/>
                 <Route path='/settings' lazy={() => import("./pages/SettingsMenuPage.tsx")}/>
+                <Route path='/previousmatches' lazy={() => import("./pages/PreviousMatchesPage.tsx")}/>
             </Route>
             <Route index lazy={() => import("./pages/LandingMenu.tsx")}/>
-            <Route path='/game/:gameid' lazy={() => import("./pages/GamePage.tsx")}/>
-            {/*<Route path='/leaderboard' lazy={() => import("./pages/LeaderboardPage")}/>*/}
 
+            {/*// @ts-ignore */}
+            <Route path='/game/:gameid' lazy={() => import("./pages/GamePage.tsx")}/>
 
         </Route>
     )

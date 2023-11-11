@@ -1,4 +1,4 @@
-import {getPlayerIdLocalstorage, setPlayerIdLocalstorage} from "../utils/localstorage-leaderboard.ts";
+import {getPlayerIdLocalstorage, setPlayerIdLocalstorage} from "../utils/localstorage-player-id.ts";
 import {useLoaderData} from "react-router-dom";
 import NavButtonRight from "../components/shared/NavButtonRight.tsx";
 import {FormEvent, useState} from "react";

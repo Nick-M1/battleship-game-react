@@ -5,6 +5,7 @@ import {createIncrementingArray} from "../../../utils/array-utils.ts";
 import getGridCellId from "../../../logic/grid-cell-css.ts";
 import {indexToCoord} from "../../../utils/coordinate-utils.ts";
 import CrossIcon from "../../icons/CrossIcon.tsx";
+import {getGameGridId} from "../../../logic/game-grid-id.ts";
 
 type Props = {
     index: number
@@ -19,7 +20,7 @@ type Props = {
 
 export default function GameGrid({ index, title, boatLocations, moves, onClickHander, playableTitleCss, playableGridCss, playableCellCss }: Props) {
     return (
-        <div>
+        <div id={getGameGridId(index)}>
             <h2 className={`ml-10 font-bold text-xl smooth-transition ${ playableTitleCss }`}>{ title }</h2>
             <div className='relative mt-10 ml-10'>
                 <div className='absolute -translate-y-6 sm:-translate-y-8 grid grid-cols-10 left-0 right-0 max-w-[80dvh] px-1'>

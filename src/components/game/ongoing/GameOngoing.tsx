@@ -18,7 +18,7 @@ type Props = {
 }
 
 export default function GameOngoing({ playerId, thisPlayer, otherPlayer, gameSession, boatLocations, thisPlayerMovesInitial, otherPlayerMovesInitial, isPlayer1 }: Props) {
-    const [thisPlayerMoves, otherPlayerMoves] = useGameMoves(playerId, gameSession.session_id, thisPlayerMovesInitial, otherPlayerMovesInitial)
+    const [thisPlayerMoves, otherPlayerMoves] = useGameMoves(playerId, otherPlayer.player_id, gameSession.session_id, thisPlayerMovesInitial, otherPlayerMovesInitial)
     const isPlayersTurn = useIsPlayersTurn(isPlayer1, gameSession.current_turn)
 
     //todo move handler elsewhere

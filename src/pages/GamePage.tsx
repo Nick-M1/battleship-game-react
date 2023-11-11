@@ -1,4 +1,4 @@
-import {getPlayerIdLocalstorage} from "../utils/localstorage-leaderboard.ts";
+import {getPlayerIdLocalstorage} from "../utils/localstorage-player-id.ts";
 import {redirect, useLoaderData} from "react-router-dom";
 import getPlayerById from "../database/queries/player/get-player-by-id.ts";
 import getGameSessionById from "../database/queries/game-session/get-game-session-by-id.ts";

@@ -4,9 +4,13 @@ import {supabase} from "../database/supabase_setup.ts";
 import getGridCellId from "../logic/grid-cell-css.ts";
 import {coordToIndex} from "../utils/coordinate-utils.ts";
 import {DROP_PIECE_CSS} from "../constants/css-constants.ts";
+import getMoves from "../database/queries/moves/get-moves.ts";
+import {smoothScroll} from "../utils/smooth-scroll.ts";
+import {getGameGridId} from "../logic/game-grid-id.ts";
 
 export default function useGameMoves(
     playerId: string,
+    otherPlayerId: string,
     gameSessionId: string,
     thisPlayerMovesInitial: Database['battleships']['Tables']['moves']['Row'][],
     otherPlayerMovesInitial: Database['battleships']['Tables']['moves']['Row'][]
@@ -20,7 +24,7 @@ export default function useGameMoves(
         const movesTblSubscribe = supabase.channel('moves')
             .on('postgres_changes',
                 { event: 'INSERT', schema: 'battleships', table: 'moves', filter: `session_id=eq.${gameSessionId}` },
-                (payload) => {
+                async (payload) => {
                     const newMove = {
                         created_at: payload.new.created_at,
                         session_id: payload.new.session_id,
@@ -30,16 +34,24 @@ export default function useGameMoves(
                         y_coordinate: payload.new.y_coordinate
                     } as Database['battleships']['Tables']['moves']['Row']
 
-                    if (payload.new.player_id === playerId) {
+
+                    if (payload.new.result === 'sunk' && payload.new.player_id === playerId) {
+                        setThisPlayerMoves(await getMoves(gameSessionId, playerId))
+                        displayGridCellCssIfThisPlayerMove(payload.new.x_coordinate, payload.new.y_coordinate)
+                        smoothScroll(getGameGridId(1), "end")
+
+                    } else if (payload.new.result === 'sunk' && payload.new.player_id === otherPlayerId) {
+                        setOtherPlayerMoves(await getMoves(gameSessionId, otherPlayerId))
+                        smoothScroll(getGameGridId(1), "start")
+
+                    } else if (payload.new.player_id === playerId) {
                         setThisPlayerMoves(prev => [...prev, newMove])
-
-                        const elem = document.getElementById(getGridCellId(1, coordToIndex(payload.new.x_coordinate, payload.new.y_coordinate)))
-                        elem?.classList.add(DROP_PIECE_CSS)
-
-                        setTimeout(() => elem?.classList.remove(DROP_PIECE_CSS), 200)
+                        displayGridCellCssIfThisPlayerMove(payload.new.x_coordinate, payload.new.y_coordinate)
+                        smoothScroll(getGameGridId(1), "end")
 
                     } else {
                         setOtherPlayerMoves(prev => [...prev, newMove])
+                        smoothScroll(getGameGridId(1), "start")
                     }
                 }
             )
@@ -51,4 +63,13 @@ export default function useGameMoves(
     }, [gameSessionId, playerId])
 
     return [thisPlayerMoves, otherPlayerMoves] as const
+}
+
+
+
+function displayGridCellCssIfThisPlayerMove(xCoordinate: number, yCoordinate: number) {
+    const elem = document.getElementById(getGridCellId(1, coordToIndex(xCoordinate, yCoordinate)))
+    elem?.classList.add(DROP_PIECE_CSS)
+
+    setTimeout(() => elem?.classList.remove(DROP_PIECE_CSS), 200)
 }
