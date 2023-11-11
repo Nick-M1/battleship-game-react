@@ -42,7 +42,7 @@ export default function useGameMoves(
 
                     } else if (payload.new.result === 'sunk' && payload.new.player_id === otherPlayerId) {
                         setOtherPlayerMoves(await getMoves(gameSessionId, otherPlayerId))
-                        smoothScroll(getGameGridId(1), "start")
+                        smoothScroll(getGameGridId(0), "start")
 
                     } else if (payload.new.player_id === playerId) {
                         setThisPlayerMoves(prev => [...prev, newMove])
@@ -51,7 +51,7 @@ export default function useGameMoves(
 
                     } else {
                         setOtherPlayerMoves(prev => [...prev, newMove])
-                        smoothScroll(getGameGridId(1), "start")
+                        smoothScroll(getGameGridId(0), "start")
                     }
                 }
             )
