@@ -3,6 +3,12 @@ import boatSizeToCss from "../../../logic/boat-size-to-css.ts";
 import getMoves from "../../../database/queries/moves/get-moves.ts";
 import {indexToCoord} from "../../../utils/coordinate-utils.ts";
 import {Database} from "../../../database/supabase.ts";
+import {
+    boatIdToImage,
+    HIT_SHIP_MOVE_GIF,
+    MISSED_SHIP_MOVE_GIF,
+    SUNK_SHIP_MOVE_GIF
+} from "../../../constants/asset-grid-cell-constants.ts";
 
 type Props = {
     index: number
@@ -26,7 +32,7 @@ export default function GridCell({ index, boatLocations, moves }: Props) {
         <div
             className={`w-full h-full flex justify-center items-start @container ${ rotateCell && ' rotate-270' }`}>
             { hasBoatLocationAtThisCell
-                && <img src={`/src/assets/boat-icons/boat-type-${ boatLocationAtThisCell.boat_type_id.boat_type_id }.png`} alt='boat' title={`Boat ${boatLocationAtThisCell.boat_type_id.boat_type_id}`} draggable={false} className={`absolute ${ boatSizeToCss(boatLocationAtThisCell.boat_type_id.size) }`}/>
+                && <img src={boatIdToImage[boatLocationAtThisCell.boat_type_id.boat_type_id]} alt='boat' title={`Boat ${boatLocationAtThisCell.boat_type_id.boat_type_id}`} draggable={false} className={`absolute ${ boatSizeToCss(boatLocationAtThisCell.boat_type_id.size) }`}/>
             }
 
             { hasMoveAtThisCell && displayMoveResultImage(moveAtThisCell.result, rotateCell) }
@@ -36,8 +42,8 @@ export default function GridCell({ index, boatLocations, moves }: Props) {
 
 function displayMoveResultImage(result: Database['battleships']['Tables']['moves']['Row']['result'], rotate: boolean) {
     switch (result) {
-        case "sunk": return <img src={`/src/assets/moves-icons/sunk-ship-hit.gif`} alt='ship-hit' draggable={false} className={`absolute opacity-90 scale-[65%]  ${ rotate && '-translate-y-1 -translate-x-1 rotate-90' }`}/>
-        case "hit": return <img src={`/src/assets/moves-icons/ship-hit-1.gif`} alt='ship-hit' draggable={false} className={`absolute opacity-90`}/>
-        case "miss": return <img src={`/src/assets/moves-icons/missed-hit.gif`} alt='missed-hit' draggable={false} className={`absolute opacity-75 pb-10 pr-1 scale-[120%]`}/>
+        case "sunk": return <img src={SUNK_SHIP_MOVE_GIF} alt='ship-hit' draggable={false} className={`absolute opacity-90 scale-[65%]  ${ rotate && '-translate-y-1 -translate-x-1 rotate-90' }`}/>
+        case "hit": return <img src={HIT_SHIP_MOVE_GIF} alt='ship-hit' draggable={false} className={`absolute opacity-90`}/>
+        case "miss": return <img src={MISSED_SHIP_MOVE_GIF} alt='missed-hit' draggable={false} className={`absolute opacity-75 pb-10 pr-1 scale-[120%]`}/>
     }
 }
