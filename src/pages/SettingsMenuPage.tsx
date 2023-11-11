@@ -17,6 +17,7 @@ import {
 } from "../constants/profile-imgs-constants.ts";
 import {createIncrementingArray} from "../utils/array-utils.ts";
 import updatePlayer from "../database/queries/player/update-player.ts";
+import toast from "react-hot-toast";
 
 
 export async function loader() {
@@ -39,13 +40,14 @@ export function Component() {
         const username = formData.get("username") as string
 
         if (playerId === null) {
-            const updatedPlayer = await createPlayer(username, selectedProfileImageIndex)       //todo warning banner toast if username not unique
+            const updatedPlayer = await createPlayer(username, selectedProfileImageIndex)       //todo warning banner toast if username not unique or too short
             setPlayerIdLocalstorage(updatedPlayer.player_id)
 
         } else {
             const updatedPlayer = await updatePlayer(playerId, username === player.username ? undefined : username, selectedProfileImageIndex === player.image_index ? undefined : selectedProfileImageIndex)
         }
 
+        toast('Updated Settings')
         window.location.reload()
     }
 
@@ -56,10 +58,10 @@ export function Component() {
 
 
     return (
-        <div className="flex flex-col md:flex-row space-y-3 items-center justify-center h-full">
+        <div className="flex flex-col md:flex-row space-y-3 space-x-3 p-2 md:items-center justify-center overflow-y-auto scrollbar h-full">
             { playerId != null && <NavButtonRight text='MAIN MENU' to='/menu' className='font-extrabold text-drop-shadow-black-sm text-yellow-400'/> }
 
-            <form onSubmit={createPlayerHandler} className="bg-neutral-800 p-6 sm:p-9 rounded-lg shadow-lg mx-auto space-y-8 ">
+            <form onSubmit={createPlayerHandler} className="bg-neutral-800 translate-y-52 md:translate-y-0 p-6 sm:p-9 rounded-xl shadow-lg mx-auto space-y-8 ">
                 <h1 className="text-4xl md:text-6xl tracking-wide font-extrabold text-yellow-500 py-2">
                     Player Settings
                 </h1>
@@ -99,7 +101,7 @@ export function Component() {
             </form>
 
 
-            <form onSubmit={createPlayerHandler} className="bg-neutral-800 p-6 sm:p-9 rounded-lg shadow-lg mx-auto space-y-3 ">
+            <form onSubmit={createPlayerHandler} className="bg-neutral-800 p-6 sm:p-9 rounded-xl shadow-lg mx-auto space-y-3 translate-y-52 md:translate-y-0">
                 <h1 className="text-4xl md:text-6xl tracking-wide font-extrabold text-yellow-500 py-2">
                     Theme Settings
                 </h1>
@@ -109,7 +111,7 @@ export function Component() {
                     { GAME_BACKGROUNDS.map((gameBackground, index) =>
                         // @ts-ignore
                         <button key={index} onClick={() => setGameBackgroundHandler(index)} style={{ '--image-url': gameBackground }}
-                                className={`w-32 h-32 bg-[image:var(--image-url)] smooth-transition rounded-xl border-4 ${ storedGameBackgroundIndex === index ? 'border-teal-500 hover:border-teal-400' : 'border-white/10 hover:border-white/20 active:border-white/30' }`}/>
+                                className={`w-full h-32 bg-[image:var(--image-url)] smooth-transition rounded-xl border-4 ${ storedGameBackgroundIndex === index ? 'border-teal-500 hover:border-teal-400' : 'border-white/10 hover:border-white/20 active:border-white/30' }`}/>
                     )}
                 </div>
             </form>

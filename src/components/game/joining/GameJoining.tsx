@@ -14,7 +14,7 @@ export default function GameJoining({ playerId, thisPlayer, gameSession }: Props
     }
 
     return (
-        <div className='min-h-screen scrollbar bg-neutral-800 bg-game-background text-white font-riffic flex flex-col items-center justify-center'>
+        <div className='min-h-screen scrollbar bg-neutral-800 bg-game-background p-3 text-white font-riffic flex flex-col items-center justify-center'>
             <h2 className='text-center text-5xl animate-pulse'>Game Lobby</h2>
             <h3 className='text-center text-2xl text-gray-400 animate-pulse py-2'>Waiting for 2nd player to join</h3>
 

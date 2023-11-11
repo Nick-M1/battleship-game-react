@@ -18,6 +18,7 @@ export default async function getGameSessionsByPlayerId(playerId: string): Promi
     const { data, error } = await supabase.from('game_sessions')
         .select("*, player_1_id ( player_id, username, image_index ), player_2_id ( player_id, username, image_index )")
         .or(`player_1_id.eq.${ playerId }, player_2_id.eq.${ playerId }`)
+        .neq('game_status', 'joining')
 
     if (error !== null || data === null)
         throw Error(JSON.stringify(error))

@@ -18,13 +18,13 @@ export function Component() {
     const { playerId, gameSessions } = useLoaderData() as Exclude<Awaited<ReturnType<typeof loader>>, Response>
 
     return (
-        <div className='flex justify-center h-full'>
+        <div className='flex justify-center h-full p-1.5'>
             <NavButtonLeft text='MAIN MENU' to='/menu' className='font-extrabold text-drop-shadow-black-sm text-yellow-400'/>
 
-            <div className="bg-neutral-800 mt-16 p-6 sm:p-9 rounded-lg shadow-lg mx-auto space-y-8 overflow-y-scroll scrollbar">
+            <div className="bg-neutral-800 mt-16 p-4 sm:p-9 rounded-xl shadow-lg mx-auto space-y-8 overflow-y-auto scrollbar">
                 <h1 className="text-4xl md:text-6xl tracking-wide font-extrabold text-yellow-500 py-2 text-center">Previous Matches</h1>
 
-                <div className='grid grid-cols-2 md:grid-cols-3'>
+                <div className='grid grid-cols-2 md:grid-cols-3 gap-2'>
                     { gameSessions.map(gameSession => {
                         const isPlayer1 = gameSession.player_1_id.player_id === playerId
                         const isGameOngoing = gameSession.completed_at === null
