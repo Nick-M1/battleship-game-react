@@ -38,20 +38,20 @@ export default function useGameMoves(
                     if (payload.new.result === 'sunk' && payload.new.player_id === playerId) {
                         setThisPlayerMoves(await getMoves(gameSessionId, playerId))
                         displayGridCellCssIfThisPlayerMove(payload.new.x_coordinate, payload.new.y_coordinate)
-                        smoothScroll(getGameGridId(1), "end")
+                        smoothScroll(getGameGridId(0), "start")
 
                     } else if (payload.new.result === 'sunk' && payload.new.player_id === otherPlayerId) {
                         setOtherPlayerMoves(await getMoves(gameSessionId, otherPlayerId))
-                        smoothScroll(getGameGridId(0), "start")
+                        smoothScroll(getGameGridId(1), "end")
 
                     } else if (payload.new.player_id === playerId) {
                         setThisPlayerMoves(prev => [...prev, newMove])
                         displayGridCellCssIfThisPlayerMove(payload.new.x_coordinate, payload.new.y_coordinate)
-                        smoothScroll(getGameGridId(1), "end")
+                        smoothScroll(getGameGridId(0), "start")
 
                     } else {
                         setOtherPlayerMoves(prev => [...prev, newMove])
-                        smoothScroll(getGameGridId(0), "start")
+                        smoothScroll(getGameGridId(1), "end")
                     }
                 }
             )
