@@ -4,7 +4,8 @@ import {getPlayerIdLocalstorage} from "../utils/localstorage-player-id.ts";
 import createGameSession from "../database/queries/game-session/create-game-session.ts";
 import joinGameSession from "../database/queries/game-session/join-game-session.ts";
 import {FormEvent} from "react";
-import {redirect, useLoaderData, useNavigate} from "react-router-dom";
+import {Link, redirect, useLoaderData, useNavigate} from "react-router-dom";
+import InformationCircleIcon from "../components/icons/InformationCircleIcon.tsx";
 
 export async function loader() {
     const playerId = getPlayerIdLocalstorage()
@@ -34,7 +35,7 @@ export function Component() {
     }
 
     return (
-        <div className="flex items-center justify-center h-full">
+        <div className="flex items-center justify-center h-full p-1">
             <NavButtonLeft text='SETTINGS' to='/settings' className='font-extrabold text-drop-shadow-black-sm text-yellow-400'/>
             <NavButtonRight text='PREVIOUS MATCHES' to='/previousmatches' className='font-extrabold text-drop-shadow-black-sm text-yellow-400 top-10 sm:top-0'/>
 
@@ -55,8 +56,11 @@ export function Component() {
                         Join Game
                     </button>
                 </form>
-
             </div>
+
+            <Link to='/instructions' className='absolute bottom-2 right-2 button-pink p-0 rounded-full'>
+                <InformationCircleIcon className='w-12 h-12 text-white'/>
+            </Link>
         </div>
     )
 }

@@ -14,6 +14,7 @@ const router = createBrowserRouter(
                 <Route path='/menu' lazy={() => import("./pages/MainMenuPage.tsx")}/>
                 <Route path='/settings' lazy={() => import("./pages/SettingsMenuPage.tsx")}/>
                 <Route path='/previousmatches' lazy={() => import("./pages/PreviousMatchesPage.tsx")}/>
+                <Route path='/instructions' lazy={() => import("./pages/InstructionsPage.tsx")}/>
             </Route>
             <Route index lazy={() => import("./pages/LandingMenu.tsx")}/>
 

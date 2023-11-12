@@ -54,6 +54,9 @@ export default {
 
         'game-background': "var(--game-background-image)",
       },
+      listStyleImage: {
+        checkmark: 'url("/checkmark-icon.svg")',
+      },
 
       borderWidth: {
         3: '3px'
