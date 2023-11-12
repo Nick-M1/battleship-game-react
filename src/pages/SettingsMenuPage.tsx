@@ -51,7 +51,6 @@ export function Component() {
         } else {
             await updatePlayer(playerId, username === player.username ? undefined : username, selectedProfileImageIndex === player.image_index ? undefined : selectedProfileImageIndex)
                 .then(() => toast.success('Updated player settings', { id: 'player-settings' }))
-                .then(() => window.location.reload())
                 .catch(createPlayerCatchErrors)
         }
     }
@@ -73,9 +72,10 @@ export function Component() {
                 </h1>
 
 
-                <div className=''>
+                <div>
                     <label htmlFor='username' className='text-lg text-gray-300 tracking-wider'>Username:</label>
                     <input type='text' id='username' name='username' defaultValue={player?.username} className='input-primary-valid' placeholder='Username...'/>
+                    <p className='text-gray-400 italic pt-1 text-sm'>Must be unique and have more than 5 characters</p>
                 </div>
 
                 <div>
