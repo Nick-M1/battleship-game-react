@@ -42,7 +42,7 @@ export function Component() {
         toast.loading('Updating player settings', { id: 'player-settings' })
 
         if (playerId === null) {
-            await createPlayer(username, selectedProfileImageIndex)       //todo warning banner toast if username not unique or too short
+            await createPlayer(username, selectedProfileImageIndex)       //todo warning banner toast if username not unique or not > 5 chars
                 .then(createdPlayer => setPlayerIdLocalstorage(createdPlayer.player_id))
                 .then(() => toast.success('Updated player settings', { id: 'player-settings' }))
                 .then(() => window.location.reload())
