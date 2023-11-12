@@ -2,7 +2,7 @@ import {getPlayerIdLocalstorage, setPlayerIdLocalstorage} from "../utils/localst
 import {useLoaderData} from "react-router-dom";
 import NavButtonRight from "../components/shared/NavButtonRight.tsx";
 import {FormEvent, useState} from "react";
-import createPlayer from "../database/queries/player/create-player.ts";
+import createPlayer, {createPlayerCatchErrors} from "../database/queries/player/create-player.ts";
 import getPlayerById from "../database/queries/player/get-player-by-id.ts";
 import {
     GAME_BACKGROUNDS,
@@ -18,6 +18,7 @@ import {
 import {createIncrementingArray} from "../utils/array-utils.ts";
 import updatePlayer from "../database/queries/player/update-player.ts";
 import toast from "react-hot-toast";
+import {PostgrestError} from "@supabase/supabase-js";
 
 
 export async function loader() {
@@ -38,22 +39,27 @@ export function Component() {
         e.preventDefault()
         const formData = new FormData(e.currentTarget)
         const username = formData.get("username") as string
+        toast.loading('Updating player settings', { id: 'player-settings' })
 
         if (playerId === null) {
-            const updatedPlayer = await createPlayer(username, selectedProfileImageIndex)       //todo warning banner toast if username not unique or too short
-            setPlayerIdLocalstorage(updatedPlayer.player_id)
+            await createPlayer(username, selectedProfileImageIndex)       //todo warning banner toast if username not unique or too short
+                .then(createdPlayer => setPlayerIdLocalstorage(createdPlayer.player_id))
+                .then(() => toast.success('Updated player settings', { id: 'player-settings' }))
+                .then(() => window.location.reload())
+                .catch(createPlayerCatchErrors)
 
         } else {
-            const updatedPlayer = await updatePlayer(playerId, username === player.username ? undefined : username, selectedProfileImageIndex === player.image_index ? undefined : selectedProfileImageIndex)
+            await updatePlayer(playerId, username === player.username ? undefined : username, selectedProfileImageIndex === player.image_index ? undefined : selectedProfileImageIndex)
+                .then(() => toast.success('Updated player settings', { id: 'player-settings' }))
+                .then(() => window.location.reload())
+                .catch(createPlayerCatchErrors)
         }
-
-        toast('Updated Settings')
-        window.location.reload()
     }
 
     const setGameBackgroundHandler = (index: number) => {
         setStoredGameBackgroundIndex(index)
         setSelectedGameBackgroundIndex(index)
+        toast('Theme updated', { id: 'theme', icon: '🧱' })
     }
 
 
@@ -97,11 +103,10 @@ export function Component() {
                 <button type='submit' className='button-orange w-full rounded-full text-white sm:text-xl'>
                     { playerId == null ? 'Create Player' : 'Update Player' }
                 </button>
-
             </form>
 
 
-            <form onSubmit={createPlayerHandler} className="bg-neutral-800 p-6 sm:p-9 rounded-xl shadow-lg mx-auto space-y-3 translate-y-52 md:translate-y-0">
+            <div className="bg-neutral-800 p-6 sm:p-9 rounded-xl shadow-lg mx-auto space-y-3 translate-y-52 md:translate-y-0">
                 <h1 className="text-4xl md:text-6xl tracking-wide font-extrabold text-yellow-500 py-2">
                     Theme Settings
                 </h1>
@@ -114,7 +119,7 @@ export function Component() {
                                 className={`w-full h-32 bg-[image:var(--image-url)] smooth-transition rounded-xl border-4 ${ storedGameBackgroundIndex === index ? 'border-teal-500 hover:border-teal-400' : 'border-white/10 hover:border-white/20 active:border-white/30' }`}/>
                     )}
                 </div>
-            </form>
+            </div>
         </div>
     )
 }
