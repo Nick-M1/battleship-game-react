@@ -5,6 +5,10 @@ import GameHeader from "./GameHeader.tsx";
 import GameGrid from "./GameGrid.tsx";
 import useIsPlayersTurn from "../../../hooks/useIsPlayersTurn.ts";
 import useGameMoves from "../../../hooks/useGameMoves.ts";
+import {useEffect, useState} from "react";
+import {calcTimeLeftSecs, calcTimeSinceStart} from "../../../logic/time-utils.ts";
+import useTimeSinceStart from "../../../hooks/useTimeSinceStart.ts";
+import GameStartCountdownTimer from "./GameStartCountdownTimer.tsx";
 
 type Props = {
     playerId: string
@@ -20,16 +24,18 @@ type Props = {
 export default function GameOngoing({ playerId, thisPlayer, otherPlayer, gameSession, boatLocations, thisPlayerMovesInitial, otherPlayerMovesInitial, isPlayer1 }: Props) {
     const [thisPlayerMoves, otherPlayerMoves] = useGameMoves(playerId, otherPlayer.player_id, gameSession.session_id, thisPlayerMovesInitial, otherPlayerMovesInitial)
     const isPlayersTurn = useIsPlayersTurn(isPlayer1, gameSession.current_turn)
+    const timeSinceStart = useTimeSinceStart(gameSession.modified_at, gameSession.current_turn)
 
-    //todo move handler elsewhere
     const moveHandler = async (xCoordinate: number, yCoordinate: number) => {
         if (!isPlayersTurn)
             return
 
-        const move = await createMove(gameSession.session_id, playerId, xCoordinate, yCoordinate)       //todo graphics or top-banner
-        // console.log(move)
+        await createMove(gameSession.session_id, playerId, xCoordinate, yCoordinate)        //todo react toast or graphics???
+            .catch((e) => alert(e))
     }
 
+    if (timeSinceStart >= 0)
+        return <GameStartCountdownTimer timeSinceStart={timeSinceStart}/>
 
     return (
         <div className='min-h-screen scrollbar bg-neutral-800 bg-game-background font-riffic text-white'>

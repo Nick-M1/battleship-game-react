@@ -10,3 +10,7 @@ export function calcTimeLeftSecs(modifiedAt: string, timePerMove: string) {
 
     return Math.floor((modifiedAtUnix + timePerMoveMilisecs - nowUnix) / 1000)
 }
+
+export function calcTimeSinceStart(startTime: string, startTimeCount: number) {
+    return Math.floor((new Date(startTime).getTime() - Date.now()) / 1000 + startTimeCount)
+}
