@@ -12,13 +12,13 @@ type Props = {
     title: string
     boatLocations: Awaited<ReturnType<typeof getBoatLocations>>
     moves: Awaited<ReturnType<typeof getMoves>>
-    onClickHander: (xCoordinate: number, yCoordinate: number) => Promise<void> | void
+    onClickHandler: (xCoordinate: number, yCoordinate: number) => Promise<void> | void
     playableTitleCss: string
     playableGridCss: string
     playableCellCss: string
 }
 
-export default function GameGrid({ index, title, boatLocations, moves, onClickHander, playableTitleCss, playableGridCss, playableCellCss }: Props) {
+export default function GameGrid({ index, title, boatLocations, moves, onClickHandler, playableTitleCss, playableGridCss, playableCellCss }: Props) {
     return (
         <div id={getGameGridId(index)}>
             <h2 className={`ml-8 md:ml-10 font-bold text-xl smooth-transition ${ playableTitleCss }`}>{ title }</h2>
@@ -35,7 +35,7 @@ export default function GameGrid({ index, title, boatLocations, moves, onClickHa
                     { createIncrementingArray(1, 100).map((value) => {
                         const { xCoordinate, yCoordinate } = indexToCoord(value)
                         return (
-                            <div key={value} id={getGridCellId(index, value)} onClick={() => onClickHander(xCoordinate, yCoordinate)} className={`chess-grid w-full h-full smooth-transition flex justify-center items-center ${playableCellCss}`}>
+                            <div key={value} id={getGridCellId(index, value)} onClick={() => onClickHandler(xCoordinate, yCoordinate)} className={`chess-grid w-full h-full smooth-transition flex justify-center items-center ${playableCellCss}`}>
                                 <CrossIcon className={`w-3 h-3 fill-gray-500/20 smooth-transition`}/>
                             </div>
                         )

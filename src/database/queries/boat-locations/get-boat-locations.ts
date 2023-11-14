@@ -14,9 +14,6 @@ export type GetBoatLocationsFunctionReturns = {
 }[]
 
 export default async function getBoatLocations(gameSessionId: string, playerId: string): Promise<GetBoatLocationsFunctionReturns> {
-    // return supabase
-    //     .rpc('get_occupied_coords', { p_session_id: gameSessionId, p_player_id: playerId })
-
     const { data, error } = await supabase.from('boat_locations')
         .select('*, boat_type_id (boat_type_id, size, color)')
         .eq('session_id', gameSessionId)

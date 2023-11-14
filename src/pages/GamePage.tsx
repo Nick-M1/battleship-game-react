@@ -9,6 +9,7 @@ import useGameSession from "../hooks/useGameSession.ts";
 import GameFinished from "../components/game/finished/GameFinished.tsx";
 import GameJoining from "../components/game/joining/GameJoining.tsx";
 import {loadGameBackground} from "../constants/asset-background-game.ts";
+import getMovesAvailable from "../database/queries/moves-available/get-moves-available.ts";
 
 
 export async function loader({ params }: { params: { gameid: string } }) {
@@ -34,19 +35,20 @@ export async function loader({ params }: { params: { gameid: string } }) {
         return { playerId, thisPlayer, otherPlayer, gameSessionInitial, boatLocations: null, thisPlayerMovesInitial: null, otherPlayerMovesInitial: null, isPlayer1 }
 
     const boatLocations = await getBoatLocations(gameSessionId, playerId)
+    const movesAvailableInitial = await getMovesAvailable(gameSessionId, playerId)
     const thisPlayerMovesInitial = await getMoves(gameSessionId, playerId)
     const otherPlayerMovesInitial = await getMoves(gameSessionId, isPlayer1 ? gameSessionInitial.player_2_id : gameSessionInitial.player_1_id)
 
-    return { playerId, thisPlayer, otherPlayer, gameSessionInitial, boatLocations, thisPlayerMovesInitial, otherPlayerMovesInitial, isPlayer1 }
+    return { playerId, thisPlayer, otherPlayer, gameSessionInitial, boatLocations, movesAvailableInitial, thisPlayerMovesInitial, otherPlayerMovesInitial, isPlayer1 }
 }
 
 export function Component() {
-    const { playerId, thisPlayer, otherPlayer, gameSessionInitial, boatLocations, thisPlayerMovesInitial, otherPlayerMovesInitial, isPlayer1 } = useLoaderData() as Exclude<Awaited<ReturnType<typeof loader>>, Response>
+    const { playerId, thisPlayer, otherPlayer, gameSessionInitial, boatLocations, movesAvailableInitial, thisPlayerMovesInitial, otherPlayerMovesInitial, isPlayer1 } = useLoaderData() as Exclude<Awaited<ReturnType<typeof loader>>, Response>
     const gameSession = useGameSession(gameSessionInitial)
 
     switch (gameSession.game_status) {
         case "joining":  return <GameJoining playerId={playerId} thisPlayer={thisPlayer} gameSession={gameSession}/>
-        case "ongoing":  return <GameOngoing playerId={playerId} thisPlayer={thisPlayer} otherPlayer={otherPlayer!} gameSession={gameSession} boatLocations={boatLocations!} thisPlayerMovesInitial={thisPlayerMovesInitial!} otherPlayerMovesInitial={otherPlayerMovesInitial!} isPlayer1={isPlayer1}/>
+        case "ongoing":  return <GameOngoing playerId={playerId} thisPlayer={thisPlayer} otherPlayer={otherPlayer!} gameSession={gameSession} boatLocations={boatLocations!} movesAvailableInitial={movesAvailableInitial!} thisPlayerMovesInitial={thisPlayerMovesInitial!} otherPlayerMovesInitial={otherPlayerMovesInitial!} isPlayer1={isPlayer1}/>
         case "finished": return <GameFinished playerId={playerId} thisPlayer={thisPlayer} otherPlayer={otherPlayer!} gameSession={gameSession} isPlayer1={isPlayer1}/>
     }
 }
