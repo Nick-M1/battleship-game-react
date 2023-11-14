@@ -42,8 +42,8 @@ export default function GridCell({ index, boatLocations, moves }: Props) {
 
 function displayMoveResultImage(result: Database['battleships']['Tables']['moves']['Row']['result'], rotate: boolean) {
     switch (result) {
-        case "sunk": return <img src={SUNK_SHIP_MOVE_GIF} alt='ship-hit' draggable={false} className={`absolute opacity-90 scale-[65%]  ${ rotate && '-translate-y-1 -translate-x-1 rotate-90' }`}/>
-        case "hit": return <img src={HIT_SHIP_MOVE_GIF} alt='ship-hit' draggable={false} className={`absolute opacity-90`}/>
+        case "sunk": return <img src={SUNK_SHIP_MOVE_GIF} alt='ship-hit' draggable={false} className={`absolute opacity-90 scale-[65%] ${ rotate && '-translate-y-1 -translate-x-1 rotate-90' }`}/>
+        case "hit": return <img src={HIT_SHIP_MOVE_GIF} alt='ship-hit' draggable={false} className={`absolute opacity-90 ${ rotate && 'translate-y-1.5 translate-x-1.5  rotate-90' }`}/>
         case "miss": return <img src={MISSED_SHIP_MOVE_GIF} alt='missed-hit' draggable={false} className={`absolute opacity-75 pb-10 pr-1 scale-[120%]`}/>
     }
 }
