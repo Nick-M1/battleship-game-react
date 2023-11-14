@@ -6,7 +6,7 @@ import {coordToIndex} from "../utils/coordinate-utils.ts";
 import {DROP_PIECE_CSS} from "../constants/css-constants.ts";
 import getMoves from "../database/queries/moves/get-moves.ts";
 import {smoothScroll} from "../utils/smooth-scroll.ts";
-import {getGameGridId} from "../logic/game-grid-id.ts";
+import {getGameGridId} from "../logic/id-generators/game-grid-id.ts";
 
 export default function useGameMoves(
     playerId: string,
@@ -19,7 +19,7 @@ export default function useGameMoves(
     const [thisPlayerMoves, setThisPlayerMoves] = useState(thisPlayerMovesInitial)
     const [otherPlayerMoves, setOtherPlayerMoves] = useState(otherPlayerMovesInitial)
 
-    //todo cleanup
+    //todo sound effects based on move type
     useEffect(() => {
         const movesTblSubscribe = supabase.channel('moves')
             .on('postgres_changes',

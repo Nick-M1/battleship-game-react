@@ -2,10 +2,10 @@ import GridCell from "./GridCell.tsx";
 import getBoatLocations from "../../../database/queries/boat-locations/get-boat-locations.ts";
 import getMoves from "../../../database/queries/moves/get-moves.ts";
 import {createIncrementingArray} from "../../../utils/array-utils.ts";
-import getGridCellId from "../../../logic/grid-cell-css.ts";
 import {indexToCoord} from "../../../utils/coordinate-utils.ts";
 import CrossIcon from "../../icons/CrossIcon.tsx";
-import {getGameGridId} from "../../../logic/game-grid-id.ts";
+import {getGameGridId} from "../../../logic/id-generators/game-grid-id.ts";
+import getGridCellId from "../../../logic/grid-cell-css.ts";
 
 type Props = {
     index: number
@@ -16,9 +16,11 @@ type Props = {
     playableTitleCss: string
     playableGridCss: string
     playableCellCss: string
+    onMouseEnter: (value: number) => void
+    onMouseLeave: (value: number) => void
 }
 
-export default function GameGrid({ index, title, boatLocations, moves, onClickHandler, playableTitleCss, playableGridCss, playableCellCss }: Props) {
+export default function GameGrid({ index, title, boatLocations, moves, onClickHandler, playableTitleCss, playableGridCss, playableCellCss, onMouseEnter, onMouseLeave }: Props) {
     return (
         <div id={getGameGridId(index)}>
             <h2 className={`ml-8 md:ml-10 font-bold text-xl smooth-transition ${ playableTitleCss }`}>{ title }</h2>
@@ -35,7 +37,12 @@ export default function GameGrid({ index, title, boatLocations, moves, onClickHa
                     { createIncrementingArray(1, 100).map((value) => {
                         const { xCoordinate, yCoordinate } = indexToCoord(value)
                         return (
-                            <div key={value} id={getGridCellId(index, value)} onClick={() => onClickHandler(xCoordinate, yCoordinate)} className={`chess-grid w-full h-full smooth-transition flex justify-center items-center ${playableCellCss}`}>
+                            <div key={value} id={getGridCellId(index, value)}
+                                 onClick={() => onClickHandler(xCoordinate, yCoordinate)}
+                                 className={`chess-grid w-full h-full smooth-transition flex justify-center items-center ${playableCellCss}`}
+                                 onMouseEnter={() => onMouseEnter(value)}
+                                 onMouseLeave={() => onMouseLeave(value)}
+                            >
                                 <CrossIcon className={`w-3 h-3 fill-gray-500/20 smooth-transition`}/>
                             </div>
                         )

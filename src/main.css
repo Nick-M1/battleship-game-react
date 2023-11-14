@@ -20,6 +20,7 @@
     @apply bg-cell-light text-cell-dark smooth-transition
   }
 
+
   /* BASICS */
   .smooth-transition {
     @apply transition duration-300 ease-in-out

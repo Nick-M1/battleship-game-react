@@ -8,7 +8,6 @@ import useTimeSinceStart from "../../../hooks/useTimeSinceStart.ts";
 import GameStartCountdownTimer from "./GameStartCountdownTimer.tsx";
 import useMoveCreator from "../../../hooks/useMoveCreator.ts";
 import useMovesAvailable from "../../../hooks/useMovesAvailable.ts";
-import {ALL_MOVES_AVAILABLE} from "../../../constants/moves-available-constants.ts";
 import MoveSelector from "./MoveSelector.tsx";
 
 type Props = {
@@ -28,10 +27,7 @@ export default function GameOngoing({ playerId, thisPlayer, otherPlayer, gameSes
     const movesAvailable = useMovesAvailable(playerId, gameSession.session_id, movesAvailableInitial)
     const isPlayersTurn = useIsPlayersTurn(isPlayer1, gameSession.current_turn)
     const timeSinceStart = useTimeSinceStart(gameSession.modified_at, gameSession.current_turn)
-    const [moveTypeSelected, setMoveTypeSelected, moveHandler] = useMoveCreator(isPlayersTurn, gameSession.session_id, playerId, thisPlayerMoves)
-
-//todo show move-previews for other move-types
-    // randomly add move types as certain current_move reached
+    const [moveTypeSelected, setMoveTypeSelected, moveHandler, surroundingCellsCss] = useMoveCreator(isPlayersTurn, gameSession.session_id, playerId, thisPlayerMoves)
 
     if (timeSinceStart >= 0)
         return <GameStartCountdownTimer timeSinceStart={timeSinceStart}/>
@@ -41,8 +37,27 @@ export default function GameOngoing({ playerId, thisPlayer, otherPlayer, gameSes
             <GameHeader thisPlayer={thisPlayer} otherPlayer={otherPlayer} isPlayersTurn={isPlayersTurn} lastMoveDatetime={gameSession.modified_at} timePerMove={gameSession.time_per_move as string}/>
 
             <div className='md:grid grid-cols-2 space-y-8 md:space-y-0 pr-2 pb-3'>
-                <GameGrid index={0} title='Your Boats' boatLocations={boatLocations} moves={otherPlayerMoves} onClickHandler={() => {}} playableTitleCss={isPlayersTurn ? 'text-gray-500' : 'text-teal-500'} playableGridCss={isPlayersTurn ? 'border-black opacity-75' : 'border-teal-600'} playableCellCss=''/>
-                <GameGrid index={1} title='Attack Your Opponent!' boatLocations={[]} moves={thisPlayerMoves} onClickHandler={moveHandler} playableTitleCss={isPlayersTurn ? 'text-red-500' : 'text-gray-500'} playableGridCss={isPlayersTurn ? 'border-teal-600' : 'border-black opacity-75'} playableCellCss={isPlayersTurn ? 'cursor-pointer hover:!bg-cyan-400 [&>*]:fill-cyan-500/75 [&>*]:hover:fill-black/50 [&>*]:hover:scale-150' : ''}/>
+                <GameGrid index={0} title='Your Boats' 
+                          boatLocations={boatLocations} 
+                          moves={otherPlayerMoves}
+                          onClickHandler={() => {}} 
+                          playableTitleCss={isPlayersTurn ? 'text-gray-500' : 'text-teal-500'}
+                          playableGridCss={isPlayersTurn ? 'border-black opacity-75' : 'border-teal-600'} 
+                          playableCellCss=''
+                          onMouseEnter={() => {}}
+                          onMouseLeave={() => {}}
+                />
+                
+                <GameGrid index={1} title='Attack Your Opponent!' 
+                          boatLocations={[]}
+                          moves={thisPlayerMoves} 
+                          onClickHandler={moveHandler}
+                          playableTitleCss={isPlayersTurn ? 'text-red-500' : 'text-gray-500'}
+                          playableGridCss={isPlayersTurn ? 'border-teal-600' : 'border-black opacity-75'}
+                          playableCellCss={isPlayersTurn ? 'cursor-pointer hover:!bg-cyan-400 [&>*]:fill-cyan-500/75 [&>*]:hover:fill-black/50 [&>*]:hover:scale-150' : ''}
+                          onMouseEnter={surroundingCellsCss.onMouseEnter}
+                          onMouseLeave={surroundingCellsCss.onMouseLeave}
+                />
             </div>
 
             <MoveSelector isPlayersTurn={isPlayersTurn} movesAvailable={movesAvailable} moveTypeSelected={moveTypeSelected} setMoveTypeSelected={setMoveTypeSelected}/>
