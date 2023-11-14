@@ -28,7 +28,7 @@ export default function GameOngoing({ playerId, thisPlayer, otherPlayer, gameSes
     const isPlayersTurn = useIsPlayersTurn(isPlayer1, gameSession.current_turn)
     const timeSinceStart = useTimeSinceStart(gameSession.modified_at, gameSession.current_turn)
     const [moveTypeSelected, setMoveTypeSelected, moveHandler, surroundingCellsCss] = useMoveCreator(isPlayersTurn, gameSession.session_id, playerId, thisPlayerMoves)
-
+console.log(gameSession.current_turn)
     if (timeSinceStart >= 0)
         return <GameStartCountdownTimer timeSinceStart={timeSinceStart}/>
 

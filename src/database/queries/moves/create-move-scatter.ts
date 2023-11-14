@@ -7,6 +7,7 @@ export default async function createMoveScatter(gameSessionId: string, playerId:
     const moves = createIncrementingArray(1, 5)
         .map(() => ({ x: randomFromOne(10), y: randomFromOne(10) }))
         .filter(({ x, y }) => !thisPlayerMoves.some(move => move.x_coordinate === x && move.y_coordinate === y))
+        .filter((item, index, self) => self.indexOf(item) == index)
 
     moves.push({ x: xCoordinate, y: yCoordinate })
 
