@@ -4,6 +4,9 @@ import {calcTimeLeftSecs, hmsToSeconds} from "../../../logic/time-utils.ts";
 import {useEffect, useState} from "react";
 import EmojiKeyboard from "./emoji/EmojiKeyboard.tsx";
 import ReceivedEmojis from "./emoji/ReceivedEmojis.tsx";
+import skipMoveIfOverrunsTime
+    from "../../../database/queries/game-session/increment-current-turn-of-game-session-by-id.ts";
+import useGameTimer from "../../../hooks/useGameTimer.ts";
 
 type Props = {
     gameSessionId: string
@@ -15,19 +18,8 @@ type Props = {
 }
 
 export default function GameHeader({ gameSessionId, thisPlayer, otherPlayer, isPlayersTurn, lastMoveDatetime, timePerMove }: Props) {
+    const [timePerMoveSecs, timeLeftSecs, displayMissedTurn] = useGameTimer(gameSessionId, lastMoveDatetime, timePerMove)
     const [emojiKeyboardOpen, setEmojiKeyboardOpen] = useState(false)
-
-    //todo custom hook
-    const timePerMoveSecs = hmsToSeconds(timePerMove)
-    const [timeLeftSecs, setTimeLeftSecs] = useState(calcTimeLeftSecs(lastMoveDatetime, timePerMove))
-
-    useEffect(() => {
-        const invervalId = setInterval(() => setTimeLeftSecs(calcTimeLeftSecs(lastMoveDatetime, timePerMove)), 1000)
-        return () => {
-            clearInterval(invervalId)
-        }
-    }, [lastMoveDatetime, timePerMove]);
-
 
     return (
         <div className='flex justify-center space-x-1 pb-3'>
@@ -36,6 +28,8 @@ export default function GameHeader({ gameSessionId, thisPlayer, otherPlayer, isP
 
             <EmojiKeyboard gameSessionId={gameSessionId} playerId={thisPlayer.player_id} emojiKeyboardOpen={emojiKeyboardOpen} setEmojiKeyboardClosed={() => setEmojiKeyboardOpen(false)}/>
             <ReceivedEmojis gameSessionId={gameSessionId} playerId={thisPlayer.player_id}/>
+
+            { displayMissedTurn && <div className={`z-20 absolute animate-moveDown text-5xl pointer-events-none opacity-0 text-teal-500`}>Missed Turn</div> }
         </div>
     )
 }
