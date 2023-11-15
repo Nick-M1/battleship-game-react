@@ -6,9 +6,10 @@ type Props = {
     isThisPlayersTurn: boolean
     timeSecsLeft: number
     toLeft: boolean
+    onClick: () => void
 }
 
-export default function GameProfile({ profile, isThisPlayersTurn, timeSecsLeft, toLeft }: Props) {
+export default function GameProfile({ profile, isThisPlayersTurn, timeSecsLeft, toLeft, onClick }: Props) {
     return (
         <div className='flex items-center'>
             <div className={`flex flex-col ${ toLeft ? 'text-right' : 'order-last'}`}>
@@ -16,7 +17,7 @@ export default function GameProfile({ profile, isThisPlayersTurn, timeSecsLeft, 
                 <h5 className={`font-bold smooth-transition tabular-nums ${ isThisPlayersTurn ? 'text-teal-500' : 'text-gray-500' }`}>{ timeSecsLeft.toString() } secs</h5>
             </div>
 
-            <img src={getProfileImageByIndex(profile.image_index)} alt='profile-pic' className={`mx-2 h-11 w-11 aspect-square rounded-full border-2 smooth-transition ${ isThisPlayersTurn ? 'border-teal-500' : 'border-gray-500' }`}/>
+            <img onClick={onClick} src={getProfileImageByIndex(profile.image_index)} alt='profile-pic' className={`mx-2 h-11 w-11 aspect-square rounded-full border-2 smooth-transition ${ isThisPlayersTurn ? 'border-teal-500' : 'border-gray-500' } ${ toLeft && 'cursor-pointer' }`}/>
         </div>
     )
 }

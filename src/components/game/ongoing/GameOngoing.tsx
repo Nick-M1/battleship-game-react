@@ -9,7 +9,6 @@ import GameStartCountdownTimer from "./GameStartCountdownTimer.tsx";
 import useMoveCreator from "../../../hooks/useMoveCreator.ts";
 import useMovesAvailable from "../../../hooks/useMovesAvailable.ts";
 import MoveSelector from "./MoveSelector.tsx";
-import ArrowLeft from "../../icons/ArrowLeft.tsx";
 import ArrowRight from "../../icons/ArrowRight.tsx";
 
 type Props = {
@@ -43,7 +42,7 @@ export default function GameOngoing({ playerId, thisPlayer, otherPlayer, gameSes
                 </button>
             )}
 
-            <GameHeader thisPlayer={thisPlayer} otherPlayer={otherPlayer} isPlayersTurn={isPlayersTurn} lastMoveDatetime={gameSession.modified_at} timePerMove={gameSession.time_per_move as string}/>
+            <GameHeader gameSessionId={gameSession.session_id} thisPlayer={thisPlayer} otherPlayer={otherPlayer} isPlayersTurn={isPlayersTurn} lastMoveDatetime={gameSession.modified_at} timePerMove={gameSession.time_per_move as string}/>
 
             <div className='md:grid grid-cols-2 space-y-8 md:space-y-0 pr-2 pb-3'>
                 <GameGrid index={0} title='Your Boats' 

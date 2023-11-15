@@ -80,9 +80,15 @@ export default {
           '0%, 100%': {transform: 'translateX(-25%)'},
           '50%': {transform: 'translateX(0%)'},
         },
+        moveDown: {
+          '0%': {transform: 'translateY(0) scale(0.8)', opacity: '0'},
+          '80%': {transform: 'translateY(200%) scale(1)', opacity: '1'},
+          '100%': {transform: 'translateY(200%) scale(1)', opacity: '0'},
+        },
       },
       animation: {
         bounceRight: 'bounceRight 1s infinite',
+        moveDown: 'moveDown 2s',
       },
     },
   },
