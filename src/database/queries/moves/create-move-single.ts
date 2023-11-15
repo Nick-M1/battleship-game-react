@@ -22,6 +22,9 @@ export function createMoveCatchErrors(error: Error) {
         case "23505":
             toast.error('This cell has already been hit!', { id: 'player-move' })
             break
+        case "P0001":
+            toast.error('Game has already finished', { id: 'player-move' })
+            break
 
         default:
             toast.error('Move failed', { id: 'player-move' })

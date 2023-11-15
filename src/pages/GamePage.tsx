@@ -10,6 +10,7 @@ import GameFinished from "../components/game/finished/GameFinished.tsx";
 import GameJoining from "../components/game/joining/GameJoining.tsx";
 import {loadGameBackground} from "../constants/asset-background-game.ts";
 import getMovesAvailable from "../database/queries/moves-available/get-moves-available.ts";
+import {useState} from "react";
 
 
 export async function loader({ params }: { params: { gameid: string } }) {
@@ -31,9 +32,6 @@ export async function loader({ params }: { params: { gameid: string } }) {
 
     const otherPlayer = await getPlayerById(isPlayer1 ? gameSessionInitial.player_2_id : gameSessionInitial.player_1_id)
 
-    if (gameSessionInitial.game_status === 'finished')
-        return { playerId, thisPlayer, otherPlayer, gameSessionInitial, boatLocations: null, thisPlayerMovesInitial: null, otherPlayerMovesInitial: null, isPlayer1 }
-
     const boatLocations = await getBoatLocations(gameSessionId, playerId)
     const movesAvailableInitial = await getMovesAvailable(gameSessionId, playerId)
     const thisPlayerMovesInitial = await getMoves(gameSessionId, playerId)
@@ -46,9 +44,19 @@ export function Component() {
     const { playerId, thisPlayer, otherPlayer, gameSessionInitial, boatLocations, movesAvailableInitial, thisPlayerMovesInitial, otherPlayerMovesInitial, isPlayer1 } = useLoaderData() as Exclude<Awaited<ReturnType<typeof loader>>, Response>
     const gameSession = useGameSession(gameSessionInitial)
 
-    switch (gameSession.game_status) {
-        case "joining":  return <GameJoining playerId={playerId} thisPlayer={thisPlayer} gameSession={gameSession}/>
-        case "ongoing":  return <GameOngoing playerId={playerId} thisPlayer={thisPlayer} otherPlayer={otherPlayer!} gameSession={gameSession} boatLocations={boatLocations!} movesAvailableInitial={movesAvailableInitial!} thisPlayerMovesInitial={thisPlayerMovesInitial!} otherPlayerMovesInitial={otherPlayerMovesInitial!} isPlayer1={isPlayer1}/>
-        case "finished": return <GameFinished playerId={playerId} thisPlayer={thisPlayer} otherPlayer={otherPlayer!} gameSession={gameSession} isPlayer1={isPlayer1}/>
-    }
+    const [viewFinishedGameBoard, setViewFinishedGameBoard] = useState(false)       //todo custom hook
+    const setViewFinishedGameBoardTrue = () => setViewFinishedGameBoard(true)
+    const setViewFinishedGameBoardFalse = () => setViewFinishedGameBoard(false)
+
+
+    if (gameSession.game_status === 'joining')
+        return <GameJoining playerId={playerId} thisPlayer={thisPlayer} gameSession={gameSession}/>
+    else if (gameSession.game_status === 'ongoing' || viewFinishedGameBoard)
+        return <GameOngoing playerId={playerId} thisPlayer={thisPlayer} otherPlayer={otherPlayer!} gameSession={gameSession} boatLocations={boatLocations!} movesAvailableInitial={movesAvailableInitial!} thisPlayerMovesInitial={thisPlayerMovesInitial!} otherPlayerMovesInitial={otherPlayerMovesInitial!} isPlayer1={isPlayer1} setViewFinishedGameBoardFalse={setViewFinishedGameBoardFalse}/>
+    else if (gameSession.game_status === 'finished')
+        return <GameFinished playerId={playerId} thisPlayer={thisPlayer} otherPlayer={otherPlayer!} gameSession={gameSession} isPlayer1={isPlayer1} setViewFinishedGameBoardTrue={setViewFinishedGameBoardTrue}/>
+
+    return (
+        <div>ERROR</div>
+    )
 }

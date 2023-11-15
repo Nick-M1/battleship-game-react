@@ -9,6 +9,8 @@ import GameStartCountdownTimer from "./GameStartCountdownTimer.tsx";
 import useMoveCreator from "../../../hooks/useMoveCreator.ts";
 import useMovesAvailable from "../../../hooks/useMovesAvailable.ts";
 import MoveSelector from "./MoveSelector.tsx";
+import ArrowLeft from "../../icons/ArrowLeft.tsx";
+import ArrowRight from "../../icons/ArrowRight.tsx";
 
 type Props = {
     playerId: string
@@ -20,20 +22,27 @@ type Props = {
     thisPlayerMovesInitial: Database['battleships']['Tables']['moves']['Row'][]
     otherPlayerMovesInitial: Database['battleships']['Tables']['moves']['Row'][]
     isPlayer1: boolean
+    setViewFinishedGameBoardFalse: () => void
 }
 
-export default function GameOngoing({ playerId, thisPlayer, otherPlayer, gameSession, boatLocations, movesAvailableInitial, thisPlayerMovesInitial, otherPlayerMovesInitial, isPlayer1 }: Props) {
+export default function GameOngoing({ playerId, thisPlayer, otherPlayer, gameSession, boatLocations, movesAvailableInitial, thisPlayerMovesInitial, otherPlayerMovesInitial, isPlayer1, setViewFinishedGameBoardFalse }: Props) {
     const [thisPlayerMoves, otherPlayerMoves] = useGameMoves(playerId, otherPlayer.player_id, gameSession.session_id, thisPlayerMovesInitial, otherPlayerMovesInitial)
     const movesAvailable = useMovesAvailable(playerId, gameSession.session_id, movesAvailableInitial)
     const isPlayersTurn = useIsPlayersTurn(isPlayer1, gameSession.current_turn)
     const timeSinceStart = useTimeSinceStart(gameSession.modified_at, gameSession.current_turn)
     const [moveTypeSelected, setMoveTypeSelected, moveHandler, surroundingCellsCss] = useMoveCreator(isPlayersTurn, gameSession.session_id, playerId, thisPlayerMoves)
-console.log(gameSession.current_turn)
+
     if (timeSinceStart >= 0)
         return <GameStartCountdownTimer timeSinceStart={timeSinceStart}/>
 
     return (
         <div className='min-h-screen scrollbar bg-neutral-800 bg-game-background font-riffic text-white relative'>
+            { gameSession.game_status === 'finished' && (
+                <button onClick={setViewFinishedGameBoardFalse} className='text-2xl absolute top-11 sm:top-0 right-0 group flex items-center p-3 font-extrabold text-drop-shadow-black-sm text-yellow-400'>
+                    Finish <ArrowRight width={30} className='ml-2 group-hover:animate-bounceRight'/>
+                </button>
+            )}
+
             <GameHeader thisPlayer={thisPlayer} otherPlayer={otherPlayer} isPlayersTurn={isPlayersTurn} lastMoveDatetime={gameSession.modified_at} timePerMove={gameSession.time_per_move as string}/>
 
             <div className='md:grid grid-cols-2 space-y-8 md:space-y-0 pr-2 pb-3'>
